@@ -343,6 +343,10 @@ class Generator:
                     print("complete!")
             elif command_line[0] == "display":
                 self.display()
+            elif command_line[0] == "clear":
+                os.system("rm works/*")
+            elif command_line[0] == "list":
+                os.system("ls works")
             elif command_line[0] == "help":
                 self.help()
             elif command_line[0] == "quit":
@@ -356,9 +360,11 @@ class Generator:
         print("Valid commands:")
         print("     - generate <num> # generate 'num' new sequences. Will overwrite past work")
         print("     - write # write all realized works to a file in the 'works' directory.")
+        print("    - clear # rm all files from the works directory.")
+        print("    - list # list all files in the works directory.")
         print("     - display # display all works and evaluate them.")
         print("     - help # display help message with API info.")
-        print("     - train <model_name> # retrain model and save model to file with name model_name + .h5")
+        print("     - train <model_name> # retrain model and save model to file with name model_name + .h5.")
         print("     - load <model_path> # load model at the specified filepath")
         print("     - quit # exit interface.")
 
