@@ -53,10 +53,12 @@ class Script:
         return chars
 
     def script_to_txt(self):
+        """A script seq to a txt file"""
         seq = [el.id for el in self.script]
         numpy.savetxt("script_arrays/" + filename + ".csv", numpy.reshape(seq[:200], (20,10)), delimiter=",")
 
     def get_char_lines(self):
+        """Extract character lines from script"""
         chars = []
         for el in self.script:
             if type(el) == Character:
@@ -64,6 +66,7 @@ class Script:
         return chars
 
     def get_sd_lines(self):
+        """Extract stage direction lines from script"""
         sds = []
         for el in self.script:
             if type(el) == StageDir:
@@ -71,6 +74,7 @@ class Script:
         return sds
 
     def get_set_lines(self):
+        """Extract set lines from script"""
         sds = []
         for el in self.script:
             if type(el) == Setting:
@@ -78,6 +82,7 @@ class Script:
         return sds
 
     def get_script(self, filepath):
+        """Parse script into a list from raw html"""
         html_file = open(filepath, 'r').read()
         soup = bs4.BeautifulSoup(html_file, 'html.parser')
         tags = soup.find("root").find_all(recursive=False)[1:]
@@ -103,6 +108,7 @@ class Script:
         return script
 
     def get_script_training_data(self):
+        """Pass 100 element window over data to get training vectors"""
         # convert script to numerical seq
         seq = [el.id for el in self.script]
         data = []
@@ -140,7 +146,7 @@ if __name__ == "__main__":
             for data in s.get_script_training_data():
                 writer.writerow(data)
 
-            # get line data
+            # get and write line data
             for el in s.get_char_lines():
                 charWriter.writerow([el.name, el.text])
             for el in s.get_sd_lines():

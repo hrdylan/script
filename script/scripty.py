@@ -57,6 +57,7 @@ class CSVDataProcessor:
         print(class_count)
 
     def partition(self):
+        """partition data for training"""
         # randomize data and pick training examples randomly
         shuffle(self.data)
         x_indexes = choice(range(len(self.data)), size=int(len(self.data)*self.division))
@@ -125,7 +126,7 @@ class ScriptSeqNet:
                 return row
 
     def generate(self, aslist=False):
-        """mess"""
+        """generates a new script sequence, can return as a list or formatted numpy.array"""
         elements = [0,1,2]
         # initialize script, convert to numpy.array (req by keras)
         script = numpy.array(self.find_start())
@@ -166,6 +167,7 @@ class LineGenerator:
         self.chars_data = self.get_chars()
 
     def load(self, path):
+        """load data from csvfile"""
         file = open(path, "r")
         data = []
         r = csv.reader(file, delimiter=",", quotechar="|")
@@ -176,6 +178,7 @@ class LineGenerator:
         return data
 
     def get_chars(self):
+        """Parse the character data into a dictionary with key: character value: lines"""
         chars_data = {}
 
         for line in self.chars:
@@ -186,6 +189,7 @@ class LineGenerator:
         return chars_data
 
     def realize(self, script):
+        """Takes a script seq and fills it randomly with lines from its knowledge base, mere generation."""
         filled_script = []
         for id in script:
             if id == 0:
@@ -213,6 +217,7 @@ class Generator:
         self.examples = self.load_ex()
 
     def load_ex(self):
+        """Load the examples of Seinfeld scripts from txt -> genre knowledge base."""
         ex = []
         for filename in os.listdir("script_arrays"):
             ex.append(numpy.genfromtxt("script_arrays/" + filename, delimiter=','))
@@ -220,6 +225,7 @@ class Generator:
         return ex
 
     def name(self):
+        """Names a script randomly. -> mere generation."""
         name = "The"
         places = ["House", "Store", "Cafe", "Shelf", "Bed", "Event", "Workplace", "Shop", "Pez", "Phone", "Raincoat",
                   "Secret", "Subway", "Wizard", "TV", "Computer", "Kramer", "George", "Jerry", "Elaine", "Apartment"]
@@ -231,6 +237,7 @@ class Generator:
         return name
 
     def create(self, num_works):
+        """Creates the number of work specified and realizes them."""
         for i in range(num_works):
             self.works.append([self.name(), self.seq_gen.generate(), 0, 0])
 
@@ -238,6 +245,7 @@ class Generator:
             self.realized_works.append([work[0], self.line_gen.realize(self.formated_to_list(work[1]))])
 
     def formated_to_list(self, work):
+        """Changes a formatted numpy.array into a python list"""
         lis = []
         for row in work:
             for id in row:
@@ -245,6 +253,7 @@ class Generator:
         return lis
 
     def eval(self):
+        """Evaluates each work based on creativity and domain competency."""
         # creativity score
         for work in self.works:
             for other_work in self.works:
@@ -268,6 +277,7 @@ class Generator:
         return
 
     def dist(self, new_work, old_work, num_rows=40):
+        """Calculates the distance between works by summing the number of index differences."""
         disim_count = 0
         for i in range(num_rows):
             for j in range(len(new_work[i])):
@@ -281,8 +291,6 @@ class Generator:
             file = open("works/"+work[0] + ".txt", "w")
             script = work[1]
             for row in script:
-                print(row)
-                print(row[0])
                 if row[0] == "char":
 
                     file.write((" " * 10) + row[1]+ "\n")
@@ -302,6 +310,7 @@ class Generator:
             file.close()
 
     def run_session(self):
+        """starts and mediates a scripty session"""
         self.works = []
         self.realized_works = []
         print("-" *40)
@@ -368,9 +377,8 @@ class Generator:
         print("     - load <model_path> # load model at the specified filepath")
         print("     - quit # exit interface.")
 
-
-
 def print_script(script):
+    """utility function for printing a script -> debugging only"""
     cnt = 0
     for el in script:
         print(el, end=",")
