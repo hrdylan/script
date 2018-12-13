@@ -25,13 +25,7 @@ class CSVDataProcessor:
         data = []
         with open(filepath, "r", newline="") as csvfile:
             reader = csv.reader(csvfile)
-            for row in reader:
-                if int(row[-1]) == 2 and numpy.random.randint(0, 10) == 0:
-
-                    data.append([int(el) for el in row])
-                elif int(row[-1]) != 2:
-                    data.append([int(el) for el in row])
-
+            data = [[int(el) for el in row] for row in reader]
 
         # duplicate settings and stage directions in order to better learn their embeddings
         # recommend: Do Not Use
@@ -45,7 +39,6 @@ class CSVDataProcessor:
                     dups2.append(row)
             for i in range(int(len(dups1)/2)):
                 data.append(dups1[i])
-
 
         return data
 
@@ -62,7 +55,7 @@ class CSVDataProcessor:
         shuffle(self.data)
         x_indexes = choice(range(len(self.data)), size=int(len(self.data)*self.division))
 
-        #divide data into 4 sets for training
+        # divide data into 4 sets for training
         for i in range(len(self.data)):
             if i in x_indexes:
                 self.X_train.append(self.data[i][:-1])
@@ -289,24 +282,20 @@ class Generator:
         """Takes each realized work and outputs it as a formated script"""
         for work in self.realized_works:
             file = open("works/"+work[0] + ".txt", "w")
+            file.write(work[0] + "\n\n\n")
             script = work[1]
             for row in script:
                 if row[0] == "char":
 
-                    file.write((" " * 10) + row[1]+ "\n")
-                    cnt = 0
+                    file.write("Dialogue: " + row[1]+ ":")
                     for word in row[2].split():
-                        if cnt >= 10:
-                            cnt = 0
-                            file.write("\n")
-                            file.write(" " * 5)
                         file.write(" " + word)
-                    file.write('\n\n')
+                    file.write('\n')
 
                 if row[0] == "set":
-                    file.write("Setting: " + " " * 2 + row[1] + ")\n\n")
+                    file.write("\n" + "Setting: " + " " * 2 + row[1] + ")\n\n")
                 if row[0] == "sd":
-                    file.write("StageDir" + " " * 2 + row[1] + ")\n\n")
+                    file.write("\n" + "StageDir" + " " * 2 + row[1] + ")\n\n")
             file.close()
 
     def run_session(self):
